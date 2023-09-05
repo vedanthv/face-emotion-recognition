@@ -14,9 +14,9 @@ In our project, we have invested significant effort in implementing image proces
 
 ### Dependencies
 
-**Operating System**: The project is platform-independent and can be run on various operating systems, including Windows 10, macOS, and Linux distributions.
+1. **Operating System**: The project is platform-independent and can be run on various operating systems, including Windows 10, macOS, and Linux distributions.
 
-2. **Programming Language**: The project is implemented using programming languages like Python and possibly C++ for certain image processing tasks.
+2. **Programming Language**: The project is implemented using programming language Python
 
 3. **Python Version**: The project requires Python 3.x, and it's recommended to use the latest stable version available at the time of installation.
 
@@ -33,10 +33,6 @@ In our project, we have invested significant effort in implementing image proces
 6. **Dataset**: Depending on the specific datasets used for training and testing the models, you should have access to and permissions to use the relevant facial emotion recognition datasets.
 
 7. **Development Environment**: An integrated development environment (IDE) like Jupyter Notebook or a code editor like Visual Studio Code can be helpful for code development and experimentation.
-
-8. **Additional Dependencies**: Depending on the exact image processing techniques and custom feature extraction methods employed in your project, you may require additional libraries or tools. Ensure to document and specify these dependencies as well.
-
-It's important to keep in mind that the specific versions of libraries and dependencies may evolve over time, so it's a good practice to periodically update and ensure compatibility with the latest versions for optimal performance and security.
 
 ### Installing
 
