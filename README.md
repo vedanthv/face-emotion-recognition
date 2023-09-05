@@ -2,6 +2,7 @@
 
 In this project, we extensively focus on leveraging texture-based facial feature representations of the eyes, ears, and nose through image processing and custom feature extraction techniques on existing datasets to enhance evaluation metrics, addressing various applications like video surveillance and anti-spoof detection in Facial Emotion Recognition (FER).
 ## Datasets
+1. **FER-2013**:The data consists of 48x48 pixel grayscale images of faces. The faces have been automatically registered so that the face is more or less centred and occupies about the same amount of space in each image.The task is to categorize each face based on the emotion shown in the facial expression into one of seven categories (0=Angry, 1=Disgust, 2=Fear, 3=Happy, 4=Sad, 5=Surprise, 6=Neutral). The training set consists of 28,709 examples and the public test set consists of 3,589 examples.
 
 ## Description of the project
 
@@ -56,7 +57,10 @@ command to run if program contains helper info
 
 ## Authors
 
-Contributors names and contact info
+1. Vedanth Baliga
+2. Yashna Karkera
+3. Abhiruchi Bharambe
+4. Nandini Hazarika
 
 ## Version History
 
