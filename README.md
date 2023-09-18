@@ -38,41 +38,9 @@ In our project, we have invested significant effort in implementing image proces
 
 7. **Development Environment**: An integrated development environment (IDE) like Jupyter Notebook or a code editor like Visual Studio Code can be helpful for code development and experimentation.
 
-### Installing
-
-* How/where to download your program
-* Any modifications needed to be made to files/folders
-
-### Executing program
-
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
-
-## Help
-
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
-
 ## Authors
 
 1. Vedanth Baliga
 2. Yashna Karkera
 3. Abhiruchi Bharambe
 4. Nandini Hazarika
-
-## Version History
-
-* 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
-* 0.1
-    * Initial Release
-
-## License
-
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
