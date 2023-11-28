@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        input[type=file] {
+            display: none;
+        }
+
+        .custom-file-upload {
+            border: 1px solid #ccc;
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+        }
+
+        #preview {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            margin: 10px auto;
+        }
+
+        #result {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        #message {
+            font-size: 18px;
+            margin: 10px;
+        }
+
+        #resources {
+            font-size: 16px;
+            margin: 10px;
+        }
+
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            border-collapse: collapse;
+            margin: 10px auto;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #camera-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Center-align the buttons */
+        #open-camera,
+        #capture-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Facial Emotion Recognition for Healthcare</h1>
+    <p>This web page uses a deep learning model to detect your emotions from a series of images of your face.</p>
+    <div id="camera-section">
+        <button id="open-camera" class="custom-file-upload">Open Camera</button>
+        <button id="capture-button" style="display: none;">Capture Image</button>
+    </div>
+
+    <div id="results" style="display: none;">
+        <div id="captured-images"></div>
+        <div id="emotion-results"></div>
+        <div id="message"></div>
+        <div id="resources"></div>
+    </div>
+
+    <script>
+        let cameraStream = null;
+        let videoElement = null;
+        let emotionsCaptured = [];
+        let currentImage = 1;
+
+        function openCameraWindow() {
+            clearPreviousResults();
+
+            const openCameraButton = document.getElementById('open-camera');
+            const captureButton = document.getElementById('capture-button');
+            openCameraButton.style.display = 'none';
+            captureButton.style.display = 'none'; // Hide initially
+
+            const constraints = {
+                video: { facingMode: 'user', width: 300, height: 300 }
+            };
+
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    cameraStream = stream;
+
+                    videoElement = document.createElement('video');
+                    videoElement.id = 'camera-preview';
+                    videoElement.width = 300;
+                    videoElement.height = 300;
+                    videoElement.autoplay = true;
+                    videoElement.playsinline = true;
+                    videoElement.srcObject = stream;
+
+                    const cameraSection = document.getElementById('camera-section');
+                    cameraSection.appendChild(videoElement);
+
+                    // Show the capture button below the video element
+                    setTimeout(() => { // Delay to ensure proper display
+                        captureButton.style.display = 'block';
+                        cameraSection.appendChild(captureButton); // Append to the same element as the video
+                    }, 500);
+                })
+                .catch(function(error) {
+                    console.error('Error accessing the camera:', error);
+                    alert('Unable to access the camera. Please check permissions and try again.');
+                });
+        }
+        document.getElementById('open-camera').addEventListener('click', openCameraWindow);
+        document.getElementById('capture-button').addEventListener('click', () => {
+            document.getElementById('capture-button').style.display = 'none';
+            captureImage(); // Start capturing images
+        });
+
+        async function captureImage() {
+            if (videoElement && cameraStream && emotionsCaptured.length < 5) {
+                const canvas = document.createElement('canvas');
+                canvas.width = videoElement.videoWidth || videoElement.width;
+                canvas.height = videoElement.videoHeight || videoElement.height;
+                const context = canvas.getContext('2d');
+                context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+                const imageData = canvas.toDataURL('image/png');
+                await simulateFormSubmission(imageData);
+            } else {
+                displayEmotions();
+            }
+        }
+
+        async function simulateFormSubmission(imageData) {
+            const countdownDiv = document.createElement('div');
+            countdownDiv.id = 'countdown';
+            countdownDiv.textContent = `Capturing Image ${currentImage} in 3 seconds`; // Initial countdown value
+            document.getElementById('camera-section').appendChild(countdownDiv);
+
+            for (let i = 2; i >= 0; i--) {
+                await delay(1000); // Wait for 1 second
+                countdownDiv.textContent = `Capturing Image ${currentImage} in ${i} seconds`;
+            }
+
+            countdownDiv.remove(); // Remove countdown after capturing image
+
+            const emotions = [
+                { name: "happy", probability: Math.random() },
+                { name: "sad", probability: Math.random() },
+                { name: "angry", probability: Math.random() },
+                { name: "surprised", probability: Math.random() },
+                { name: "fearful", probability: Math.random() },
+                { name: "disgusted", probability: Math.random() },
+                { name: "neutral", probability: Math.random() }
+            ];
+            currentImage++;
+            if(currentImage>5){
+                currentImage=1;
+            }
+            emotionsCaptured.push({ imageData, emotions });
+            captureImage(); // Capture next image if less than 5 images captured
+            
+        }
+
+        function displayEmotions() {
+            const resultSection = document.getElementById('results');
+            resultSection.style.display = 'block';
+
+            const capturedImages = document.getElementById('captured-images');
+            emotionsCaptured.forEach((item, index) => {
+                const imageElement = document.createElement('img');
+                imageElement.src = item.imageData;
+                imageElement.alt = `Captured Image ${index + 1}`;
+
+                const emotionInfo = document.createElement('div');
+                emotionInfo.textContent = `Image ${index + 1} Emotion: ${item.emotions[1].name}`;
+
+                capturedImages.appendChild(imageElement);
+                capturedImages.appendChild(emotionInfo);
+            });
+
+            const dominantEmotion = determineDominantEmotion();
+            displayResults(dominantEmotion);
+
+            document.getElementById('open-camera').style.display = 'block'; // Show open camera button
+            // Remove the video preview element
+            if (videoElement && videoElement.parentNode) {
+                videoElement.parentNode.removeChild(videoElement);
+            }
+        }
+
+        function determineDominantEmotion() {
+        const emotionsCount = {
+            happy: 0,
+            sad: 0,
+            angry: 0,
+            surprised: 0,
+            fearful: 0,
+            disgusted: 0,
+            neutral: 0
+        };
+
+        emotionsCaptured.forEach(item => {
+            // Increment the count for each emotion in the captured images
+            // Assuming the emotions are stored as an array 'item.emotions'
+            const dominantEmotion = item.emotions[0].name;
+            emotionsCount[dominantEmotion]++;
+        });
+
+        // Find the emotion with the highest count
+        let maxCount = 0;
+        let dominantEmotion = 'neutral'; // Default to neutral if no dominant emotion is found
+        for (const emotion in emotionsCount) {
+            if (emotionsCount[emotion] > maxCount) {
+                maxCount = emotionsCount[emotion];
+                dominantEmotion = emotion;
+            }
+        }
+
+        return dominantEmotion;
+    }
+
+
+        function displayResults(dominantEmotion) {
+            const emotionResults = document.getElementById('emotion-results');
+            emotionResults.textContent = `Dominant Emotion: ${dominantEmotion}`;
+
+            const message = document.getElementById('message');
+            let messageText = '';
+            switch (dominantEmotion) {
+                case 'happy':
+                    messageText = "You look happy! That's great!";
+                    break;
+                case 'sad':
+                    messageText = "You look sad. It's important to express your feelings and seek support.";
+                    break;
+                case 'angry':
+                    messageText = "You look angry. Take a deep breath and try to calm down before reacting.";
+                    break;
+                case 'surprised':
+                    messageText = "You look surprised. Sometimes unexpected things happen, take a moment to process.";
+                    break;
+                case 'fearful':
+                    messageText = "You look fearful. It's okay to feel scared, try to focus on things that make you feel safe.";
+                    break;
+                case 'disgusted':
+                    messageText = "You look disgusted. Unpleasant things happen, remember to take care of yourself.";
+                    break;
+                case 'neutral':
+                    messageText = "You look neutral. Emotions can be complex, take a moment to check in with yourself.";
+                    break;
+                default:
+                    messageText = "Sorry, I could not recognize your emotion.";
+            }
+            message.textContent = messageText;
+
+            const resources = document.getElementById('resources');
+            resources.innerHTML = "If you need any help with your mental health, please check out these resources:";
+            switch (dominantEmotion) {
+                case 'happy':
+                    resources.innerHTML += "<a href='link1' target='_blank'>Resource 1</a>";
+                    resources.innerHTML += "<a href='link2' target='_blank'>Resource 2</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                case 'sad':
+                    resources.innerHTML += "<a href='link3' target='_blank'>Resource 3</a>";
+                    resources.innerHTML += "<a href='link4' target='_blank'>Resource 4</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                case 'angry':
+                    resources.innerHTML += "<a href='link5' target='_blank'>Resource 5</a>";
+                    resources.innerHTML += "<a href='link6' target='_blank'>Resource 6</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                case 'surprised':
+                    resources.innerHTML += "<a href='link7' target='_blank'>Resource 7</a>";
+                    resources.innerHTML += "<a href='link8' target='_blank'>Resource 8</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                case 'fearful':
+                    resources.innerHTML += "<a href='link9' target='_blank'>Resource 9</a>";
+                    resources.innerHTML += "<a href='link10' target='_blank'>Resource 10</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                case 'disgusted':
+                    resources.innerHTML += "<a href='link11' target='_blank'>Resource 11</a>";
+                    resources.innerHTML += "<a href='link12' target='_blank'>Resource 12</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                case 'neutral':
+                    resources.innerHTML += "<a href='link13' target='_blank'>Resource 13</a>";
+                    resources.innerHTML += "<a href='link14' target='_blank'>Resource 14</a>";
+                    // Add more relevant resources based on the emotion
+                    break;
+                default:
+                    resources.innerHTML = "Sorry, no specific resources found.";
+                    break;
+            }
+        }
+
+
+        function clearPreviousResults() {
+            emotionsCaptured = [];
+            document.getElementById('results').style.display = 'none';
+            document.getElementById('captured-images').innerHTML = '';
+            document.getElementById('emotion-results').textContent = '';
+            document.getElementById('message').textContent = '';
+            document.getElementById('resources').innerHTML = '';
+        }
+
+        document.getElementById('open-camera').addEventListener('click', openCameraWindow);
+
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+    </script>
+</body>
+</html>
