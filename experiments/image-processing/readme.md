@@ -2,17 +2,18 @@
 
 ### ****************************Preprocessing****************************
 
-1. ************************************************Face Alignment Detectors************************************************
-    - **Viola-Jones face detector** - removes background and focuses on face only
-    - **Active Appearance Model** - Generative Model
-    - **Mixture of Trees and Discriminative Response Map Filtering** - Localized feature detection
-    - ****************************************************************************Supervised Descent Method -**************************************************************************** regressive function that maps images to localized facial landmarks
+1. ************************************************Image Processing************************************************
+    - **Unsharping** - Enhancing image contrast by applying unsharp mask filtering to emphasize edges and details
+    - **Denoising** - Employing noise reduction algorithms to remove unwanted artifacts and improve image clarity.
+    - **Egde Detection** - Identifying and highlighting edges within the image using techniques such as Sobel or Canny edge detection.
+    -  **Blur** - Applying blurring filters to reduce noise or emphasize certain features within the image.
+    -  **Rotate** - Adjusting image orientation by rotating to a desired angle for improved analysis or visualization purposes.
     - **Task Constrained Deep Neural Network and Cascaded CNN** - SOTA models for face alignment
+    - **Face Alignment** - Incorporating the dlib library enables efficient facial landmark detection, facial recognition, and object tracking.
 2. **********************************Data Augmentation**********************************
     - **Randomly crop images** from 4 corners and flip them
     - **Use only center patch** facial textures in the dataset
     - **Rotation, Shifting, Skew and Contrast General Methods**
-    - **Salt and Pepper Noise, Spekle Noise and Gaussian Noise**
     - **3D Convolutional Neural Network** to create a synthetic dataset with different levels of saturation
 3. ************************Face Normalization************************
     1. **********Illumination Normalization********** 
@@ -20,12 +21,20 @@
         - ********************************************Discrete Cosine Transforms******************************************** Based Normalization
         - **********Homomorphic Filter********** based Normalization
         - ********************************Histogram Equalization -******************************** improves global contrast
-        - ************************************************Weighted Sum Approach************************************************ of Histogram Equalization and Linear Mapping
-        - ********************************************Global Contrast Normalization -******************************************** SOTA
-    2. ************************************Pose Normalization************************************
-        - Face Normalization[localize texture landmarks on face] + mask on 3D reference model of face.
-        - FF-GAN, TP-GAN, DR-GAN
-      
+4. ************************Feature Transform and Extraction************************
+    1. **********Filter Based Transform:********** 
+        - ****************Fisher Score**************** 
+        - ********************************************Dispersion Ratio******************************************** 
+        - **********Pasi Luukka Metric**********
+    2. **********Texture Based Transform:********** 
+        - ****************Scale-Invariant Feature Transform (SIFT)**************** 
+        - ********************************************Gabor Filters******************************************** 
+        - **********Histogram of Oriented Gradients (HOG)**********
+        - **********Local Binary Patterns (LBP)**********
+        - **********Haralick Texture Features**********
+        - **********Spatial Pyramid Pooling(SPP)**********
+        - **********Binary Robust Invariant Scalable Keypoints (BRISK)**********
+        - **********Zernike moments**********
 ### Models for Facial Emotion Recognition
 
 1. **Convolutional Neural Networks**
@@ -47,7 +56,7 @@
 4. **Generative Adversial Networks**
 - We aim to create a model to control the information output of the discriminator using certain conditions and filters that were utilized in the preprocessing stage. Some GAN models that can be utilized are DGCNN networks that is a blend of 2 CNN models for disriminator and generator networks and finally their outputs can be compared. Other type of GAN is VAEGAN that uses the discriminator to learn features from the images and generator that uses VAE to reconstruct the images.
 
-### Implented Techniques
+### Implemented Techniques
 
 | Dataset | Technique | Research Paper  | Description   |
 | ------ |----------|-------------------| ------------ |
@@ -55,3 +64,4 @@
 |[Kaggle FER](https://www.kaggle.com/datasets/msambare/fer2013)|[Gaussian Unsharp Mask](https://github.com/vedanthv/face-emotion-recognition/blob/main/experiments/image-processing/unsharping.ipynb)|NA|Tuning of Sigma Parameter of Gaussian Model and Scaling Factor to control sharpness|
 |[Kaggle FER](https://www.kaggle.com/datasets/msambare/fer2013)|[Edge Detection](https://github.com/vedanthv/face-emotion-recognition/blob/main/experiments/image-processing/edge-detection.ipynb)|NA|Examines an image and identifies the edges and boundaries present within it|
 |[Kaggle FER](https://www.kaggle.com/datasets/msambare/fer2013)|[Denoising](https://github.com/vedanthv/face-emotion-recognition/blob/main/experiments/image-processing/notebookname.ipynb)|NA|Removes or reduces the unwanted noise from an image while preserving the important details and features|
+|[Kaggle Extended ckplus](https://www.kaggle.com/datasets/shawon10/ckplus)|[Face Alignment](https://github.com/vedanthv/face-emotion-recognition/blob/main/experiments/image-processing/face-alignment.ipynb)|NA|Using dlib: Precisely detecting and adjusting facial landmarks in an image to a standardized position|
